@@ -1,0 +1,6 @@
+<resources>
+    <integer name="com_vk_sdk_AppId">5481811</integer>
+    <string name="app_name">VK Client</string>
+    <string name="dialogs_title">Dialogs list</string>
+    <string name="yesterday">yesterday</string>
+</resources>
