@@ -12,18 +12,15 @@ import android.util.Log;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import com.google.common.base.Function;
-import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
 import com.test.app.GuiThreadExecutor;
 import com.test.app.VKApplication;
 import com.test.model.Message;
+import com.test.ui.util.images.AvatarCollageUtils;
 import com.test.ui.util.images.ImageDownloader;
-import com.vk.sdk.api.model.VKApiUserFull;
 import com.vk.test.R;
 
 import java.lang.ref.WeakReference;
@@ -32,11 +29,9 @@ import java.util.Date;
 
 public class DialogItemView extends LinearLayout {
     private static final ImageDownloader imageDownloader = VKApplication.getInstance().getImageDownloader();
-    private static final GetPhotoUri getPhotoUri = new GetPhotoUri();
     private static final String LAST_YEAR_DATE_FORMAT = "d MMM yyyy";
     private static final String SAME_YEAR_DATE_FORMAT = "d MMM";
     private static final String LOG_TAG = "Item view";
-    private static final int MAX_IMAGES = 4;
 
     private final ImageView avatarView;
     private final TextView titleView;
@@ -70,25 +65,17 @@ public class DialogItemView extends LinearLayout {
         this.imageCallback = new ImageCallback(avatarView);
     }
 
-    public void bind(Message message, final Iterable<VKApiUserFull> users) {
+    public void bind(Message message) {
         chatId = message.getChatId();
         titleView.setText(message.title);
         lastMessageView.setText(message.body);
         timeStampView.setText(formatTimeStamp(getContext(), message.date * 1000L));
 
-        String messagePhoto = message.getPhoto();
-        if (!isBlank(messagePhoto)) {
-            loadAvatar(ImmutableSet.of(messagePhoto));
+        ImmutableSet<String> photoUris = AvatarCollageUtils.getAvatar(message);
+        if (photoUris.isEmpty()) {
+            avatarView.setImageDrawable(getPlaceholder(getContext()));
         } else {
-            ImmutableSet<String> photoUris = ImmutableSet.copyOf(
-                    Iterables.limit(Optional.presentInstances(Iterables.transform(users, getPhotoUri)), MAX_IMAGES)
-            );
-
-            if (photoUris.isEmpty()) {
-                avatarView.setImageDrawable(getPlaceholder(getContext()));
-            } else {
-                loadAvatar(photoUris);
-            }
+            loadAvatar(photoUris);
         }
     }
 
@@ -134,20 +121,6 @@ public class DialogItemView extends LinearLayout {
                 && yesterday.get(Calendar.DAY_OF_MONTH) == stamp.get(Calendar.DAY_OF_MONTH);
     }
 
-    private static boolean isBlank(String string) {
-        return string == null || "".equals(string);
-    }
-
-    private static class GetPhotoUri implements Function<VKApiUserFull, Optional<String>> {
-        @Override
-        public Optional<String> apply(VKApiUserFull input) {
-            if (isBlank(input.photo_100)) {
-                return Optional.absent();
-            } else {
-                return Optional.of(input.photo_100);
-            }
-        }
-    }
 
     private class ImageCallback implements FutureCallback<Bitmap> {
         private final WeakReference<ImageView> avatarView;

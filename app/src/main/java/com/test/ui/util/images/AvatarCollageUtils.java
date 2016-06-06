@@ -2,15 +2,47 @@ package com.test.ui.util.images;
 
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
+import com.test.model.Message;
+import com.test.model.UsersLoader;
+import com.vk.sdk.api.model.VKApiUserFull;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import static android.media.ThumbnailUtils.extractThumbnail;
 
 public final class AvatarCollageUtils {
-    private static final int gapSize = 1;
+    private static final int GAP_SIZE = 1;
+    private static final int MAX_IMAGES = 4;
+    private static final GetPhotoUri getPhotoUri = new GetPhotoUri();
+    private static final UsersLoader usersLoader = UsersLoader.getInstance();
 
     private AvatarCollageUtils() {}
+
+    public static ImmutableSet<String> getAvatar(Message message) {
+        String messagePhoto = message.getPhoto();
+        if (!isBlank(messagePhoto)) {
+            return ImmutableSet.of(messagePhoto);
+        } else {
+            Set<Optional<VKApiUserFull>> users = new HashSet<>();
+            for (int userId : message.getChatActive()) {
+                users.add(usersLoader.get(userId));
+            }
+            Iterable<VKApiUserFull> chatActive = Optional.presentInstances(users);
+            return ImmutableSet.copyOf(
+                    Iterables.limit(Optional.presentInstances(Iterables.transform(chatActive, getPhotoUri)), MAX_IMAGES)
+            );
+        }
+    }
+
+    private static boolean isBlank(String string) {
+        return string == null || "".equals(string);
+    }
 
     public static Bitmap createBitmap(List<Bitmap> bitmaps, int width, int height) {
         switch (bitmaps.size()) {
@@ -47,8 +79,8 @@ public final class AvatarCollageUtils {
     private static Bitmap concatVertical(Bitmap top, Bitmap bottom, int canvasWidth, int canvasHeight) {
         Bitmap bitmap = Bitmap.createBitmap(canvasWidth, canvasHeight, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
-        canvas.drawBitmap(top, 0, -gapSize, null);
-        canvas.drawBitmap(bottom, 0, canvasWidth + gapSize, null);
+        canvas.drawBitmap(top, 0, -GAP_SIZE, null);
+        canvas.drawBitmap(bottom, 0, canvasWidth + GAP_SIZE, null);
         top.recycle();
         bottom.recycle();
         return bitmap;
@@ -58,10 +90,21 @@ public final class AvatarCollageUtils {
         int canvasSide = Math.min(canvasWidth, canvasHeight);
         Bitmap bitmap = Bitmap.createBitmap(canvasSide, canvasSide, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
-        canvas.drawBitmap(left, -gapSize, 0, null);
-        canvas.drawBitmap(right, left.getWidth() + gapSize, 0, null);
+        canvas.drawBitmap(left, -GAP_SIZE, 0, null);
+        canvas.drawBitmap(right, left.getWidth() + GAP_SIZE, 0, null);
         left.recycle();
         right.recycle();
         return bitmap;
+    }
+
+    private static class GetPhotoUri implements Function<VKApiUserFull, Optional<String>> {
+        @Override
+        public Optional<String> apply(VKApiUserFull input) {
+            if (isBlank(input.photo_100)) {
+                return Optional.absent();
+            } else {
+                return Optional.of(input.photo_100);
+            }
+        }
     }
 }

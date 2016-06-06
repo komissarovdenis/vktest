@@ -11,7 +11,8 @@ import java.util.List;
 
 public class Message extends VKApiMessage {
 
-    private Integer chatId;
+    private int chatId;
+    private int usersCount;
     private ArrayList<Integer> chatActive = new ArrayList<>();
     private String photo;
 
@@ -27,6 +28,7 @@ public class Message extends VKApiMessage {
         this.chatId = in.readInt();
         this.chatActive = in.readParcelable(List.class.getClassLoader());
         this.photo = in.readString();
+        this.usersCount = in.readInt();
     }
 
     public Message parse(JSONObject source) throws JSONException {
@@ -39,6 +41,7 @@ public class Message extends VKApiMessage {
             }
         }
         photo = source.optString("photo_100");
+        usersCount = source.optInt("users_count");
         return this;
     }
 
@@ -48,11 +51,16 @@ public class Message extends VKApiMessage {
         dest.writeInt(this.chatId);
         dest.writeSerializable(this.chatActive);
         dest.writeString(this.photo);
+        dest.writeInt(this.usersCount);
     }
 
 
     public Integer getChatId() {
         return chatId;
+    }
+
+    public int getUsersCount() {
+        return usersCount;
     }
 
     public ArrayList<Integer> getChatActive() {
@@ -62,6 +70,7 @@ public class Message extends VKApiMessage {
     public String getPhoto() {
         return photo;
     }
+
 
     public static Creator<Message> CREATOR = new Creator<Message>() {
         public Message createFromParcel(Parcel source) {

@@ -6,4 +6,6 @@
     <dimen name="avatar_size">72dp</dimen>
     <dimen name="dialog_item_vertical_padding">7dp</dimen>
     <dimen name="dialog_item_horizontal_padding">15dp</dimen>
+    <dimen name="action_bar_avatar_padding_vertical">7dp</dimen>
+    <dimen name="action_bar_avatar_padding_horizontal">5dp</dimen>
 </resources>

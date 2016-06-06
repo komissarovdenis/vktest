@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import com.google.common.base.Function;
@@ -20,6 +21,7 @@ import com.test.model.DialogsLoader;
 import com.test.model.Message;
 import com.test.model.UsersLoader;
 import com.test.ui.adapter.DialogsAdapter;
+import com.test.ui.util.images.AvatarCollageUtils;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKScope;
@@ -30,7 +32,7 @@ import com.vk.test.R;
 
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AdapterView.OnItemClickListener {
     private static final String LOG_TAG = "VK Dialogs";
     private static final String SCOPE = VKScope.MESSAGES;
     private static final RequestUsers requestUsers = new RequestUsers();
@@ -49,6 +51,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         dialogsList = (ListView) findViewById(R.id.dialogs_list);
         loadingView = (ProgressBar) findViewById(R.id.loading_view);
+        dialogsList.setOnItemClickListener(this);
 
         if (VKSdk.isLoggedIn()) {
             requestDialogs();
@@ -90,12 +93,23 @@ public class MainActivity extends AppCompatActivity {
         dialogsList.setVisibility(show ? View.GONE : View.VISIBLE);
     }
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Message message = (Message) parent.getItemAtPosition(position);
+        Intent intent = new Intent(this, ChatActivity.class);
+        intent.putExtra(ChatActivity.CHAT_ID_KEY, id);
+        intent.putExtra(ChatActivity.TITLE_KEY, message.title);
+        intent.putExtra(ChatActivity.USERS_COUNT_KEY, message.getUsersCount());
+        intent.putExtra(ChatActivity.AVATAR_KEY, AvatarCollageUtils.getAvatar(message));
+        startActivity(intent);
+    }
+
 
     private class RequestCallback implements FutureCallback<SparseArray<VKApiUserFull>> {
         @Override
         public void onSuccess(SparseArray<VKApiUserFull> result) {
             Log.d(LOG_TAG, "Users loaded: " + result.size());
-            dialogsList.setAdapter(new DialogsAdapter(dialogs, result));
+            dialogsList.setAdapter(new DialogsAdapter(dialogs));
             updateProgress(false);
         }
 
