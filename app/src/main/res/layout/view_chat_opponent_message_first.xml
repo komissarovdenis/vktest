@@ -24,6 +24,7 @@
                 android:id="@+id/text_view"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:autoLink="web"
                 android:padding="@dimen/text_view_padding"
                 android:textSize="17sp"/>
 
@@ -42,6 +43,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:paddingLeft="@dimen/time_stamp_padding"
+            android:paddingRight="@dimen/time_stamp_padding_end"
             android:paddingBottom="@dimen/time_stamp_padding_bottom"
             android:textColor="@color/light_blue"/>
 

@@ -61,8 +61,9 @@ public class CustomLinearLayout extends LinearLayout {
                 MeasureSpec.makeMeasureSpec(avatarHeight, MeasureSpec.EXACTLY));
         timeView.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
 
+        final LinearLayout.LayoutParams contentParams = (LayoutParams) contentView.getLayoutParams();
         final int avatarAndTimeWidth = avatarView.getMeasuredWidth() + timeView.getMeasuredWidth();
-        final int freeSpace = width - avatarAndTimeWidth;
+        final int freeSpace = width - avatarAndTimeWidth - contentParams.rightMargin - contentParams.leftMargin;
         contentView.measure(MeasureSpec.makeMeasureSpec(freeSpace, MeasureSpec.AT_MOST), MeasureSpec.UNSPECIFIED);
 
         setMeasuredDimension(widthMeasureSpec, contentView.getMeasuredHeight() + getPaddingTop() + getPaddingBottom());
