@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.test.ui.view.CustomLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:layout_gravity="left|start"
+              android:padding="@dimen/bubble_padding">
+
+    <Space
+            android:id="@+id/avatar_view"
+            android:layout_width="@dimen/bubble_opponent_other_margin"
+            android:layout_height="wrap_content"/>
+
+    <LinearLayout
+            android:id="@+id/content_view"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/white_bubble"
+            android:layout_gravity="left|start">
+
+        <TextView
+                android:id="@+id/text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/text_view_padding"
+                android:textSize="17sp"/>
+
+        <ImageView
+                android:id="@+id/attachment_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@null"
+                android:visibility="gone"/>
+
+    </LinearLayout>
+
+    <TextView
+            android:id="@+id/time_stamp_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:textColor="@color/light_blue"
+            android:paddingLeft="@dimen/time_stamp_padding"
+            android:paddingBottom="@dimen/time_stamp_padding_bottom"/>
+
+</com.test.ui.view.CustomLinearLayout>

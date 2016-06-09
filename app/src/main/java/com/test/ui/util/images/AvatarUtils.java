@@ -1,14 +1,19 @@
 package com.test.ui.util.images;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Iterables;
 import com.test.model.Message;
 import com.test.model.UsersLoader;
+import com.test.ui.util.Optionals;
+import com.test.ui.util.StringUtils;
 import com.vk.sdk.api.model.VKApiUserFull;
+import com.vk.test.R;
 
 import java.util.HashSet;
 import java.util.List;
@@ -16,17 +21,17 @@ import java.util.Set;
 
 import static android.media.ThumbnailUtils.extractThumbnail;
 
-public final class AvatarCollageUtils {
+public final class AvatarUtils {
     private static final int GAP_SIZE = 1;
     private static final int MAX_IMAGES = 4;
     private static final GetPhotoUri getPhotoUri = new GetPhotoUri();
     private static final UsersLoader usersLoader = UsersLoader.getInstance();
 
-    private AvatarCollageUtils() {}
+    private AvatarUtils() {}
 
     public static ImmutableSet<String> getAvatar(Message message) {
         String messagePhoto = message.getPhoto();
-        if (!isBlank(messagePhoto)) {
+        if (!StringUtils.isBlank(messagePhoto)) {
             return ImmutableSet.of(messagePhoto);
         } else {
             Set<Optional<VKApiUserFull>> users = new HashSet<>();
@@ -40,8 +45,12 @@ public final class AvatarCollageUtils {
         }
     }
 
-    private static boolean isBlank(String string) {
-        return string == null || "".equals(string);
+    public static Optional<String> getAvatar(int userId) {
+        return Optionals.flatMap(usersLoader.get(userId), getPhotoUri);
+    }
+
+    public static Drawable getPlaceholder(Context context) {
+        return context.getResources().getDrawable(R.drawable.avatar_placeholder);
     }
 
     public static Bitmap createBitmap(List<Bitmap> bitmaps, int width, int height) {
@@ -100,7 +109,7 @@ public final class AvatarCollageUtils {
     private static class GetPhotoUri implements Function<VKApiUserFull, Optional<String>> {
         @Override
         public Optional<String> apply(VKApiUserFull input) {
-            if (isBlank(input.photo_100)) {
+            if (StringUtils.isBlank(input.photo_100)) {
                 return Optional.absent();
             } else {
                 return Optional.of(input.photo_100);

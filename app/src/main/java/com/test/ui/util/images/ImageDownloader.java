@@ -91,7 +91,7 @@ public class ImageDownloader {
             } else if (bitmapList.size() == 1) {
                 return bitmapList.get(0);
             } else {
-                Bitmap bitmap = AvatarCollageUtils.createBitmap(bitmapList, AVATAR_EDGE_SIZE, AVATAR_EDGE_SIZE);
+                Bitmap bitmap = AvatarUtils.createBitmap(bitmapList, AVATAR_EDGE_SIZE, AVATAR_EDGE_SIZE);
                 bitmapCache.add(uris, bitmap);
                 return bitmap;
             }

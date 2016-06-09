@@ -21,7 +21,7 @@ import com.test.model.DialogsLoader;
 import com.test.model.Message;
 import com.test.model.UsersLoader;
 import com.test.ui.adapter.DialogsAdapter;
-import com.test.ui.util.images.AvatarCollageUtils;
+import com.test.ui.util.images.AvatarUtils;
 import com.vk.sdk.VKAccessToken;
 import com.vk.sdk.VKCallback;
 import com.vk.sdk.VKScope;
@@ -100,7 +100,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         intent.putExtra(ChatActivity.CHAT_ID_KEY, id);
         intent.putExtra(ChatActivity.TITLE_KEY, message.title);
         intent.putExtra(ChatActivity.USERS_COUNT_KEY, message.getUsersCount());
-        intent.putExtra(ChatActivity.AVATAR_KEY, AvatarCollageUtils.getAvatar(message));
+        intent.putExtra(ChatActivity.AVATAR_KEY, AvatarUtils.getAvatar(message));
         startActivity(intent);
     }
 

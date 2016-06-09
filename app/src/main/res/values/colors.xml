@@ -6,4 +6,7 @@
 
     <color name="medium_grey">#999</color>
     <color name="light_grey">#EEEEEE</color>
+    <color name="light_blue">#cddde2</color>
+    <color name="gradient_start">#5a7b86</color>
+    <color name="gradient_end">#abcddd</color>
 </resources>

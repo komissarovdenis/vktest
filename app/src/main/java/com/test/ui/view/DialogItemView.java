@@ -3,7 +3,6 @@ package com.test.ui.view;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.text.format.DateFormat;
 import android.text.format.DateUtils;
@@ -19,7 +18,7 @@ import com.google.common.util.concurrent.ListenableFuture;
 import com.test.app.GuiThreadExecutor;
 import com.test.app.VKApplication;
 import com.test.model.Message;
-import com.test.ui.util.images.AvatarCollageUtils;
+import com.test.ui.util.images.AvatarUtils;
 import com.test.ui.util.images.ImageDownloader;
 import com.vk.test.R;
 
@@ -71,9 +70,9 @@ public class DialogItemView extends LinearLayout {
         lastMessageView.setText(message.body);
         timeStampView.setText(formatTimeStamp(getContext(), message.date * 1000L));
 
-        ImmutableSet<String> photoUris = AvatarCollageUtils.getAvatar(message);
+        ImmutableSet<String> photoUris = AvatarUtils.getAvatar(message);
         if (photoUris.isEmpty()) {
-            avatarView.setImageDrawable(getPlaceholder(getContext()));
+            avatarView.setImageDrawable(AvatarUtils.getPlaceholder(getContext()));
         } else {
             loadAvatar(photoUris);
         }
@@ -84,14 +83,10 @@ public class DialogItemView extends LinearLayout {
         ListenableFuture<Bitmap> avatarFuture = imageDownloader.downloadImage(photos);
         Futures.addCallback(avatarFuture, imageCallback, GuiThreadExecutor.getInstance());
         if (!avatarFuture.isDone()) {
-            avatarView.setImageDrawable(getPlaceholder(getContext()));
+            avatarView.setImageDrawable(AvatarUtils.getPlaceholder(getContext()));
         }
     }
 
-
-    private static Drawable getPlaceholder(Context context) {
-        return context.getResources().getDrawable(R.drawable.avatar_placeholder);
-    }
 
     private static CharSequence formatTimeStamp(Context context, long timeStamp) {
         if (DateUtils.isToday(timeStamp)) {

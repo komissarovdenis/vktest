@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:padding="@dimen/bubble_padding"
+              android:gravity="right|end">
+
+    <TextView
+            android:id="@+id/time_stamp_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:paddingRight="@dimen/time_stamp_padding"
+            android:paddingLeft="@dimen/time_stamp_padding_end"
+            android:paddingBottom="@dimen/time_stamp_padding_bottom"
+            android:textColor="@color/light_blue"/>
+
+    <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/blue_bubble_with_tail">
+
+        <TextView
+                android:id="@+id/text_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/text_view_padding"
+                android:textSize="17sp"
+                android:textColor="@android:color/white"/>
+
+        <ImageView
+                android:id="@+id/attachment_view"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="@null"
+                android:visibility="gone"/>
+
+    </LinearLayout>
+
+</LinearLayout>
