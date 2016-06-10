@@ -49,7 +49,15 @@ public class DialogItemView extends LinearLayout {
     }
 
     public DialogItemView(Context context, AttributeSet attrs, int defStyleAttr) {
-        this(context, attrs, defStyleAttr, 0);
+        super(context, attrs, defStyleAttr);
+
+        inflate(context, R.layout.view_dialog_item, this);
+
+        this.avatarView = (ImageView) findViewById(R.id.avatar_view);
+        this.titleView  = (TextView) findViewById(R.id.title_view);
+        this.lastMessageView  = (TextView) findViewById(R.id.last_message_view);
+        this.timeStampView  = (TextView) findViewById(R.id.time_stamp_view);
+        this.imageCallback = new ImageCallback(avatarView);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
